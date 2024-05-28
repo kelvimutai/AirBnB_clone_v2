@@ -1,15 +1,5 @@
-#!/usr/bin/python3
-"""This is the file storage class for AirBnB"""
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
 import shlex
-
 
 class FileStorage:
     """This class serializes instances to a JSON file and
@@ -32,9 +22,9 @@ class FileStorage:
             for key in dictionary:
                 partition = key.replace('.', ' ')
                 partition = shlex.split(partition)
-                if (partition[0] == cls.__name__):
+                if partition[0] == cls.__name__:
                     dic[key] = self.__objects[key]
-            return (dic)
+            return dic
         else:
             return self.__objects
 
@@ -78,3 +68,16 @@ class FileStorage:
         """ calls reload()
         """
         self.reload()
+
+    def get(self, cls, id):
+        """Retrieve one object by class and id"""
+        key = "{}.{}".format(cls.__name__, id)
+        return self.__objects.get(key)
+
+    def count(self, cls=None):
+        """Count the number of objects in storage"""
+        if cls:
+            return len([obj for obj in self.__objects.values() if obj.__class__ == cls])
+        else:
+            return len(self.__objects)
+
